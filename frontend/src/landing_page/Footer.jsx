@@ -27,7 +27,7 @@ function Footer() {
             <br />
             <a href="">Press & media</a>
             <br />
-            <a href="">Zerodha cares (CSR)</a>
+            <a href="">Zerodha cares(CSR)</a>
             <br />
           </div>
           <div className="col">
