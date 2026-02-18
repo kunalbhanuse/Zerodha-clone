@@ -6,6 +6,13 @@ const MONGODB_URI = process.env.MONGODB_URI;
 const app = express();
 const { HoldingsModel } = require("./model/HoldingsModel");
 const PositionsModel = require("./model/PositionsModel");
+const { OrdersModel } = require("./model/OrdersModel");
+// const { Watchlistmodel } = require("./model/WatchlistModel");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+
+app.use(cors());
+app.use(bodyParser.json());
 
 mongoose
   .connect(MONGODB_URI)
@@ -176,6 +183,34 @@ mongoose
 //   }
 //   res.send("Position saved");
 // });
+
+app.get("/allHoldings", async (req, res) => {
+  let allHoldings = await HoldingsModel.find({});
+  res.json(allHoldings);
+});
+
+app.get("/allPositions", async (req, res) => {
+  let allPositions = await PositionsModel.find({});
+  res.json(allPositions);
+});
+
+// Post Orders
+app.post("/newOrder", async (req, res) => {
+  let newOrder = new OrdersModel({
+    name: req.body.name,
+    qty: req.body.qty,
+    price: req.body.price,
+    mode: req.body.mode,
+  });
+  newOrder.save();
+  console.log("order ;- ", newOrder);
+  res.send("Order saved");
+});
+// Get Orders
+app.get("/allOrders", async (req, res) => {
+  let allOrders = await OrdersModel.find({});
+  res.json(allOrders);
+});
 
 app.listen(PORT, () => {
   console.log(`App is Started...${PORT}`);
