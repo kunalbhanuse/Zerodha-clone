@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import GeneralContext from "./GeneralContext";
+
 import { Tooltip, Grow } from "@mui/material";
-import { watchlist } from "../data/data";
+import { watchlist as initialWatchlist } from "../data/data";
 import {
   KeyboardArrowDown,
   KeyboardArrowUp,
@@ -9,6 +11,12 @@ import {
 } from "@mui/icons-material";
 
 const WatchList = () => {
+  const [watchlist, setWatchlist] = useState(initialWatchlist);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filterSearch = watchlist.filter((stock) => {
+    return stock.name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
   return (
     <div className="watchlist-container">
       <div className="search-container">
@@ -18,12 +26,16 @@ const WatchList = () => {
           id="search"
           placeholder="Search eg:infy, bse, nifty fut weekly, gold mcx"
           className="search"
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <span className="counts"> {watchlist.length} / 50</span>
+        <span className="counts">
+          {" "}
+          {filterSearch.length / watchlist.length} / 50
+        </span>
       </div>
 
       <ul className="list">
-        {watchlist.map((stock, index) => {
+        {filterSearch.map((stock, index) => {
           return <WatchListItem stock={stock} key={index} />;
         })}
       </ul>
@@ -62,11 +74,11 @@ const WatchListItem = ({ stock }) => {
 };
 
 const WatchListActions = ({ uid }) => {
-  // const generalContext = useContext(GeneralContext);
+  const generalContext = useContext(GeneralContext);
 
-  // const handleBuyClick = () => {
-  //   generalContext.openBuyWindow(uid);
-  // };
+  const handleBuyClick = () => {
+    generalContext.openBuyWindow(uid);
+  };
 
   return (
     <span className="actions">
@@ -76,9 +88,10 @@ const WatchListActions = ({ uid }) => {
           placement="top"
           arrow
           TransitionComponent={Grow}
-          // onClick={handleBuyClick}
         >
-          <button className="buy">Buy</button>
+          <button className="buy" onClick={handleBuyClick}>
+            Buy
+          </button>
         </Tooltip>
         <Tooltip
           title="Sell (S)"
