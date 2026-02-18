@@ -1,9 +1,18 @@
-import React from "react";
-import { holdings } from "../data/data";
+import React, { useEffect, useState } from "react";
+// import { holdings } from "../data/data";
+import axios from "axios";
 const Holdings = () => {
+  const [allholdings, setAllHoldings] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:3002/allHoldings").then((res) => {
+      console.log(res.data);
+      setAllHoldings(res.data);
+    });
+  }, []);
   return (
     <>
-      <h3 className="title">Holdings ({holdings.length})</h3>
+      <h3 className="title">Holdings ({allholdings.length})</h3>
 
       <div className="order-table">
         <table>
@@ -17,7 +26,7 @@ const Holdings = () => {
             <td>Net chg.</td>
             <td>Day chg.</td>
           </tr>
-          {holdings.map((stock, index) => {
+          {allholdings.map((stock, index) => {
             const curValue = stock.price * stock.qty;
             const isProfit = curValue - stock.avg * stock.qty >= 0.0;
             const profClass = isProfit ? "profit" : "loss";
